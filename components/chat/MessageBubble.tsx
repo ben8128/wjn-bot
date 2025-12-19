@@ -20,29 +20,29 @@ export function MessageBubble({
   return (
     <div
       className={cn(
-        "flex gap-3 p-4",
+        "flex gap-2 px-3 py-2",
         isUser ? "flex-row-reverse" : "flex-row"
       )}
     >
-      <Avatar className="h-8 w-8 shrink-0">
+      <Avatar className="h-6 w-6 shrink-0 mt-0.5">
         <AvatarFallback
           className={cn(
-            "text-xs font-medium",
+            "text-[10px] font-medium",
             isUser
               ? "bg-blue-600 text-white"
               : "bg-emerald-600 text-white"
           )}
         >
-          {isUser ? "You" : "WJN"}
+          {isUser ? "U" : "W"}
         </AvatarFallback>
       </Avatar>
 
       <div
         className={cn(
-          "flex-1 rounded-lg px-4 py-3",
+          "flex-1 rounded-md px-3 py-2",
           isUser
-            ? "bg-blue-50 dark:bg-blue-950 ml-12"
-            : "bg-gray-50 dark:bg-gray-900 mr-12"
+            ? "bg-blue-50 dark:bg-blue-950"
+            : "bg-gray-50 dark:bg-gray-900"
         )}
       >
         {isUser ? (

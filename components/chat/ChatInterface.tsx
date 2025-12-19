@@ -6,7 +6,6 @@ import { MessageBubble } from "./MessageBubble";
 import { ContextSelector } from "./ContextSelector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Send, Settings2, Loader2 } from "lucide-react";
 
 interface Message {
@@ -19,7 +18,7 @@ export function ChatInterface() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
-  const [showContext, setShowContext] = useState(true);
+  const [showContext, setShowContext] = useState(false);
   const [context, setContext] = useState<CampaignContext>({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -130,119 +129,94 @@ export function ChatInterface() {
   }
 
   return (
-    <Card className="flex flex-col h-[calc(100vh-8rem)] max-w-4xl mx-auto">
-      <CardHeader className="border-b shrink-0 py-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">
-            WJN Messaging Assistant
-          </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowContext(!showContext)}
-            className="gap-2"
-          >
-            <Settings2 className="h-4 w-4" />
-            {showContext ? "Hide" : "Show"} Context
-          </Button>
-        </div>
-
-        {showContext ? (
-          <div className="mt-4">
-            <ContextSelector context={context} onChange={setContext} />
-          </div>
-        ) : (
-          <div className="mt-2">
+    <div className="fixed inset-0 flex flex-col">
+      <header className="border-b shrink-0 px-3 py-1.5 bg-background z-10">
+        <div className="flex items-center gap-3 max-w-5xl mx-auto">
+          <a href="https://winningjobsnarrative.org/" target="_blank" rel="noopener noreferrer" className="shrink-0">
+            <img
+              src="https://winningjobsnarrative.org/wp-content/uploads/2022/11/WJN_Logo-text-horizontal-768x152.png"
+              alt="Winning Jobs Narrative"
+              className="h-6"
+            />
+          </a>
+          <div className="flex-1 flex items-center gap-2">
             <ContextSelector
               context={context}
               onChange={setContext}
-              isCollapsed
+              isCollapsed={!showContext}
             />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowContext(!showContext)}
+              className="gap-1 h-6 px-2 text-xs shrink-0"
+            >
+              <Settings2 className="h-3 w-3" />
+              {showContext ? "Less" : "More"}
+            </Button>
           </div>
-        )}
-      </CardHeader>
+        </div>
+      </header>
 
-      <CardContent className="flex-1 flex flex-col p-0 min-h-0">
-        <div className="flex-1 overflow-y-auto" ref={scrollRef}>
-          <div className="divide-y">
-            {messages.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground">
-                <p className="text-lg font-medium mb-2">
-                  Welcome to the WJN Messaging Assistant
-                </p>
-                <p className="text-sm mb-4">
-                  Ask me about economic messaging for your campaign. I can help
-                  with talking points, message framing, and what to avoid.
-                </p>
-                <div className="text-left max-w-lg mx-auto space-y-2">
-                  <p className="text-xs font-medium text-foreground">
-                    Try asking:
-                  </p>
-                  <ul className="text-xs space-y-1">
-                    <li>
-                      &quot;Give me 3 things to say about tariffs and 2 things
-                      to avoid&quot;
-                    </li>
-                    <li>
-                      &quot;How should I talk about inflation to suburban
-                      voters?&quot;
-                    </li>
-                    <li>
-                      &quot;My opponent called us job killers - how do I
-                      respond?&quot;
-                    </li>
-                  </ul>
-                </div>
+      <main className="flex-1 overflow-y-auto" ref={scrollRef}>
+        <div className="max-w-5xl mx-auto">
+          {messages.length === 0 ? (
+            <div className="p-6 text-center text-muted-foreground">
+              <p className="text-sm mb-3">
+                Ask about economic messaging for your campaign.
+              </p>
+              <div className="text-left max-w-md mx-auto text-xs space-y-1 text-muted-foreground">
+                <p className="font-medium text-foreground mb-1">Try:</p>
+                <p>&bull; &quot;3 things to say about tariffs, 2 to avoid&quot;</p>
+                <p>&bull; &quot;How to talk about inflation to suburban voters?&quot;</p>
+                <p>&bull; &quot;Opponent called us job killers - how to respond?&quot;</p>
               </div>
-            ) : (
-              messages.map((message, i) => (
-                <MessageBubble
-                  key={i}
-                  role={message.role}
-                  content={message.content}
-                  isStreaming={
-                    isStreaming &&
-                    i === messages.length - 1 &&
-                    message.role === "assistant"
-                  }
-                />
-              ))
-            )}
-          </div>
-        </div>
-
-        <div className="border-t p-4 bg-background">
-          <form onSubmit={handleSubmit}>
-            <div className="flex gap-2">
-              <Textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask about economic messaging..."
-                className="min-h-[44px] max-h-[200px] resize-none"
-                rows={1}
-                disabled={isLoading}
-              />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={isLoading || !input.trim()}
-                className="shrink-0 h-[44px] w-[44px]"
-              >
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Press Enter to send, Shift+Enter for new line
-            </p>
-          </form>
+          ) : (
+            messages.map((message, i) => (
+              <MessageBubble
+                key={i}
+                role={message.role}
+                content={message.content}
+                isStreaming={
+                  isStreaming &&
+                  i === messages.length - 1 &&
+                  message.role === "assistant"
+                }
+              />
+            ))
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </main>
+
+      <footer className="border-t p-2 bg-background shrink-0 z-10">
+        <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
+          <div className="flex gap-2">
+            <Textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about economic messaging..."
+              className="min-h-[40px] max-h-[120px] resize-none text-sm"
+              rows={1}
+              disabled={isLoading}
+            />
+            <Button
+              type="submit"
+              size="icon"
+              disabled={isLoading || !input.trim()}
+              className="shrink-0 h-[40px] w-[40px]"
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </form>
+      </footer>
+    </div>
   );
 }
