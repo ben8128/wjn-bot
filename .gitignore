@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Documents and converted files (large)
+0 - AI Inputs Examples/
+.converted/
+
+# Python virtual environment
+.venv/
+
+# Uploaded files cache
+lib/uploaded-files.json
